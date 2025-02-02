@@ -1,0 +1,77 @@
+---
+title: "Assignment 1 - Loading Data into a Data Frame"
+author: "Jayden Jiang"
+date: "2025-02-02"
+output: html_document
+---
+
+## Library
+```{r}
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+```
+
+## Introduction
+The article I chose from FiveThirtyEight was "The Ultimate Halloween Candy Power Ranking," published on October 31, 2016. The article presents a ranking based on survey, sales data, and other metrics, providing insights into which treats are most favored during the Halloween season. 
+
+The dataset was taken from: https://fivethirtyeight.com/videos/the-ultimate-halloween-candy-power-ranking/
+
+## Load Data
+```{r}
+candy_rawdata <- read.csv("https://raw.githubusercontent.com/JaydeeJan/Best-Candy/refs/heads/main/candy-data.csv")
+head(candy_rawdata)
+```
+
+### Columns Renaming & Subsetting
+```{r}
+# rename 
+candy_rawdata <- candy_rawdata %>%
+  rename(
+    Candy_Name = competitorname,
+    Chocolate = chocolate,
+    Fruity = fruity,
+    Caramel = caramel,
+    Peanut_Almond = peanutyalmondy,
+    Nougat = nougat,
+    Crisped_Rice_Wafer = crispedricewafer,
+    Hard = hard,
+    Bar = bar,
+    Sugar_Percentage = sugarpercent,
+    Price_Percentage = pricepercent,
+    Win_Percentage = winpercent
+  )
+
+# subset
+candy_subsetdata <- candy_rawdata %>%
+  select(
+    Candy_Name, Chocolate, Fruity, Caramel, Peanut_Almond, Nougat, Crisped_Rice_Wafer, Hard, Bar, Sugar_Percentage, Price_Percentage, Win_Percentage
+  )
+
+head(candy_subsetdata)
+```
+### Sort Top 10 Popular Choice for Holloween
+```{r}
+top_10_candy <- candy_subsetdata %>%
+  arrange(desc(Win_Percentage)) %>%
+  head(10)
+
+top_10_candy
+```
+
+### Create a Bar Plot
+```{r}
+ggplot(top_10_candy, aes(x = reorder(Candy_Name, Win_Percentage), y = Win_Percentage, fill = Candy_Name)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  labs(
+    title = "Top 10 Hallowwen Candies rated by Win Percentage",
+    x = "Candy Name",
+    y = "Win Percentage"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+## Conclusion 
+The retailers and manufactureers should focus more on promoting chocolate and peanut-based candies during Halloween season based from graph above. Offering differient packs containing both with and without peanut chocolate may maximum the profit sales. 
